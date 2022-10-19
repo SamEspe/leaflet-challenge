@@ -14,10 +14,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // Bring in data for markers
 d3.json(url).then(function(data){
-    L.geoJson(data).addTo(myMap);
-
+    L.geoJson(data, {
+        pointToLayer: function(feature, latlng){
+            return L.circleMarker(latlng)
+        }
+    }).addTo(myMap);
 })
-
-// Create marker layer
-
-// 
