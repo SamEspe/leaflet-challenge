@@ -26,10 +26,12 @@ let depth = [];
 d3.json(url).then(function(data){
     // console.log(data.features.length);
 
+
+
     for (let i = 0; i < data.features.length; i++) {
         magnitude[i] = [data["features"][i]["properties"]["mag"]];
         place[i] = [data["features"][i]["properties"]["place"]];
-        depth[i] = [data["features"][i]["geometry"]["coordinates"][2]];
+        depth[i] = [data["features"][i]["geometry"]["coordinates"][2]];    
     };
 
     console.log("Magnitudes: ", magnitude);
@@ -42,9 +44,21 @@ d3.json(url).then(function(data){
     
     console.log("Metadata: ", metadata);
 
+    // let markerOptions = {
+    //     color: "red",
+    //     radius: 
+    // };
+
     L.geoJson(data, {
+        onEachFeature: function(feature, layer){
+            layer.bindPopup("string" + feature.properties.mag)
+        },
         pointToLayer: function(feature, latlng){
-            return L.circleMarker(latlng)
+            return L.circleMarker(latlng, {
+                color: "red",
+                radius: feature.properties.mag
+            }) 
         }
-    }).bindPopup(metadata).addTo(myMap);
+
+    }).addTo(myMap);
 })
