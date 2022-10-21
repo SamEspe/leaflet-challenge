@@ -26,17 +26,43 @@ d3.json(url).then(function(data){
     console.log(depth);
     let maxDepth = Math.max(...depth);
     console.log(maxDepth);
-    console.log("HEx#"+ (Math.trunc(((255/maxDepth) * 600))).toString(16));
 
+    let colorList = [];
+
+    // let depthRange = maxDepth;
+
+    // for (let i = 0; i < 10; i++){
+    //     depthRange = 
+    // };
+
+    function depthConversion(depth){
+        const factor = 255/maxDepth;
+        let conversion = factor * depth;
+
+        console.log("Conversion Decimal:", conversion);
+        let red = (Math.trunc(conversion)).toString(16);
+        console.log(red);
+        if (red < 0) {
+            red = "0";
+        };
+        if (red.length > 2){
+            red = "ff"
+        };
+        if (red.length < 2){
+            red = "0" + red
+        }
+        
+        console.log("Red adjusted: ", red);
+        return red
+        }
+    
     L.geoJson(data, {
         onEachFeature: function(feature, layer){
             layer.bindPopup("<dl><dt>Magnitude</dt><dd>" + feature.properties.mag + "</dd><dt>Location</dt><dd>" + feature.properties.place + "</dd><dt>Depth</dt><dd>" + feature.geometry.coordinates[2] + " km</dd></dl>")
         },
         pointToLayer: function(feature, latlng){
             return L.circleMarker(latlng, {
-                color: "#"+ (Math.trunc(((maxDepth/255) * feature.geometry.coordinates[2]))).toString(16) + (255 - (Math.trunc(((maxDepth/255) * feature.geometry.coordinates[2])))).toString(16) + "0",
-                // Set the radius proportional to the magnitude of the earthquake. I chose to scale the logarithmic from base 2 instead
-                // of base 10 so that the smaller ones could still be seen, but the bigger ones don't take over the map
+                color: "#" + depthConversion(feature.geometry.coordinates[2]) + depthConversion(maxDepth - feature.geometry.coordinates[2]) + "00",
                 radius: ((2 ** feature.properties.mag)/2) + 1
             }) 
         }
