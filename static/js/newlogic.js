@@ -50,12 +50,14 @@ d3.json(url).then(function(data){
     L.geoJson(data, {
         onEachFeature: function(feature, layer){
             // Add a popup to each feature
-            layer.bindPopup("<dl><dt>Magnitude</dt><dd>" + feature.properties.mag + "</dd><dt>Location</dt><dd>" + feature.properties.place + "</dd><dt>Depth</dt><dd>" + feature.geometry.coordinates[2] + " km</dd></dl>")
+            let color = "#" + depthConversion(feature.geometry.coordinates[2]) + depthConversion(maxDepth - feature.geometry.coordinates[2]) + "3a"
+
+            layer.bindPopup("<dl><dt>Magnitude:</dt><dd>" + feature.properties.mag + "</dd><dt>Location:</dt><dd>" + feature.properties.place + "</dd><dt>Depth:</dt><dd>" + feature.geometry.coordinates[2] + " km</dd><dt>Color:</dt><dd>" + color + "</dl>")
         },
         pointToLayer: function(feature, latlng){
             // Create circles at the lat/long coordinates of each earthquake
             return L.circleMarker(latlng, {
-                // Use depthConversion function to create hexadecimal color string
+                // Use depthConversion function to create hexadecimal color string. Deeper earthquakes are redder, and shallow earthquakes are greener.
                 color: "#" + depthConversion(feature.geometry.coordinates[2]) + depthConversion(maxDepth - feature.geometry.coordinates[2]) + "3a",
                 fillOpacity: 0.4,
                 // Scale the radius to the magnitude. Richter scale magnitudes are logarithmic (base 10). I made my scale base 2 so that you can see the difference between magnitudes without making circles that are as large as the map
