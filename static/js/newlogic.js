@@ -47,10 +47,41 @@ d3.json(url).then(function(data){
         return color
         }
     
-    L.geoJson(data, {
+    function colorString(depth){
+        let outputString = "#" + depthConversion(depth) + depthConversion(maxDepth - depth) + "3a";
+        return outputString;
+    };
+
+    function colorGrades(maxDepth) {
+        let colorGradesArray = [];
+
+        for (let k = 0; k < 1.25; k = k + 0.25) {
+            let colorBarCode = "#" + depthConversion(k * maxDepth) + depthConversion(maxDepth - k*maxDepth) + "3a";
+            colorGradesArray.push(colorBarCode);
+        };
+        return colorGradesArray;
+    };
+
+    console.log(colorGrades(maxDepth));
+    let legend = L.control({position: 'bottomright'});
+    legend.onAdd = function (map) {
+        let div = L.DomUtil.create('div', 'info legend');
+            grades = colorGrades(maxDepth);
+            // labels=[];
+
+        for (let j = 0; j < grades.length; j++) {
+            div.innerHTML +=
+                '<i style="background:' + grades[j] + '"></i> ' + (Number(grades[j])*255)
+        };
+        return div
+    };
+
+    legend.addTo(map);
+
+    L.geoJson(data, {        
         onEachFeature: function(feature, layer){
             // Add a popup to each feature
-            let color = "#" + depthConversion(feature.geometry.coordinates[2]) + depthConversion(maxDepth - feature.geometry.coordinates[2]) + "3a"
+            let color = colorString(feature.geometry.coordinates[2])
 
             layer.bindPopup("<dl><dt>Magnitude:</dt><dd>" + feature.properties.mag + "</dd><dt>Location:</dt><dd>" + feature.properties.place + "</dd><dt>Depth:</dt><dd>" + feature.geometry.coordinates[2] + " km</dd><dt>Color:</dt><dd>" + color + "</dl>")
         },
@@ -58,7 +89,7 @@ d3.json(url).then(function(data){
             // Create circles at the lat/long coordinates of each earthquake
             return L.circleMarker(latlng, {
                 // Use depthConversion function to create hexadecimal color string. Deeper earthquakes are redder, and shallow earthquakes are greener.
-                color: "#" + depthConversion(feature.geometry.coordinates[2]) + depthConversion(maxDepth - feature.geometry.coordinates[2]) + "3a",
+                color: colorString(feature.geometry.coordinates[2]),
                 fillOpacity: 0.4,
                 // Scale the radius to the magnitude. Richter scale magnitudes are logarithmic (base 10). I made my scale base 2 so that you can see the difference between magnitudes without making circles that are as large as the map
                 radius: ((2 ** feature.properties.mag)/2) + 1
