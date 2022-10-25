@@ -62,16 +62,15 @@ d3.json(url).then(function(data){
         return colorGradesArray;
     };
 
-    console.log(colorGrades(maxDepth));
     let legend = L.control({ position: "bottomright" });
     legend.onAdd = function (myMap) {
-        let div = L.DomUtil.create('div', 'info legend');
+        let div = L.DomUtil.create('div', 'legend');
             grades = colorGrades(maxDepth);
-            // labels=[];
+            labels=[0, Math.trunc(0.25*maxDepth), Math.trunc(0.5*maxDepth), Math.trunc(0.75*maxDepth), Math.trunc(maxDepth)];
 
         for (let j = 0; j < grades.length; j++) {
             div.innerHTML +=
-                '<i style="background:' + grades[j] + '"></i> ' + (Number(grades[j])*255)
+                '<i style="background:' + grades[j] + '"></i> ' + labels[j]
         };
         return div
     };
@@ -92,7 +91,7 @@ d3.json(url).then(function(data){
             return L.circleMarker(latlng, {
                 // Use depthConversion function to create hexadecimal color string. Deeper earthquakes are redder, and shallow earthquakes are greener.
                 color: colorString(feature.geometry.coordinates[2]),
-                fillOpacity: 0.4,
+                fillOpacity: 0.5,
                 // Scale the radius to the magnitude. Richter scale magnitudes are logarithmic (base 10). I made my scale base 2 so that you can see the difference between magnitudes without making circles that are as large as the map
                 radius: ((2 ** feature.properties.mag)/2) + 1
             }) 
