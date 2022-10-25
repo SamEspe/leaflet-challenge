@@ -66,11 +66,12 @@ d3.json(url).then(function(data){
     legend.onAdd = function (myMap) {
         let div = L.DomUtil.create('div', 'legend');
             grades = colorGrades(maxDepth);
-            labels=[0, Math.trunc(0.25*maxDepth), Math.trunc(0.5*maxDepth), Math.trunc(0.75*maxDepth), Math.trunc(maxDepth)];
-
+            labels=[String(0)+" km", String(Math.trunc(0.25*maxDepth)) + " km", String(Math.trunc(0.5*maxDepth))+" km", String(Math.trunc(0.75*maxDepth))+" km", String(Math.trunc(maxDepth))+" km"];
+        div.innerHTML += '<h4>Earthquake </br> Depth</h4>';
+        
         for (let j = 0; j < grades.length; j++) {
             div.innerHTML +=
-                '<i style="background:' + grades[j] + '"></i> ' + labels[j]
+                '<li><i style="background:' + grades[j] + '"></i> ' + labels[j] + "</li>"
         };
         return div
     };
@@ -84,14 +85,14 @@ d3.json(url).then(function(data){
             // Add a popup to each feature
             let color = colorString(feature.geometry.coordinates[2])
 
-            layer.bindPopup("<dl><dt>Magnitude:</dt><dd>" + feature.properties.mag + "</dd><dt>Location:</dt><dd>" + feature.properties.place + "</dd><dt>Depth:</dt><dd>" + feature.geometry.coordinates[2] + " km</dd><dt>Color:</dt><dd>" + color + "</dd><dt>Time:</dt><dd>" + new Date(feature.properties.time) + "</dd><dt>Type:</dt><dd>" + feature.properties.type+ "</dd></dl>")
+            layer.bindPopup("<dl><dt>Magnitude:</dt><dd>" + feature.properties.mag + "</dd><dt>Location:</dt><dd>" + feature.properties.place + "</dd><dt>Depth:</dt><dd>" + feature.geometry.coordinates[2] + "</dd><dt>Time:</dt><dd>" + new Date(feature.properties.time) + "</dd></dl>")
         },
         pointToLayer: function(feature, latlng){
             // Create circles at the lat/long coordinates of each earthquake
             return L.circleMarker(latlng, {
                 // Use depthConversion function to create hexadecimal color string. Deeper earthquakes are redder, and shallow earthquakes are greener.
                 color: colorString(feature.geometry.coordinates[2]),
-                fillOpacity: 0.5,
+                fillOpacity: 0.4,
                 // Scale the radius to the magnitude. Richter scale magnitudes are logarithmic (base 10). I made my scale base 2 so that you can see the difference between magnitudes without making circles that are as large as the map
                 radius: ((2 ** feature.properties.mag)/2) + 1
             }) 
