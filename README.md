@@ -18,4 +18,4 @@ The color of the circle represents the depth of the earthquake's hypocenter (the
 The legend displays the color of the shallowest possible earthquake (0 km), the deepest earthquake in the data set, and three intermediate depths: 25%, 50%, and 75% of the maximum depth. This way, the color more accurately reflects the distribution of depths within the data set.
 
 ### Viewing the Map
-This map can be viewed by opening the files in Visual Studio Code and opening the HTML file with Live Server.
+This map can be viewed by opening the files in Visual Studio Code and opening the HTML file with Live Server. This page is also hosted on GitHub Pages at the following URL: https://samespe.github.io/leaflet-challenge/.
