@@ -63,8 +63,8 @@ d3.json(url).then(function(data){
     };
 
     console.log(colorGrades(maxDepth));
-    let legend = L.control({position: 'bottomright'});
-    legend.onAdd = function (map) {
+    let legend = L.control({ position: "bottomright" });
+    legend.onAdd = function (myMap) {
         let div = L.DomUtil.create('div', 'info legend');
             grades = colorGrades(maxDepth);
             // labels=[];
@@ -76,14 +76,16 @@ d3.json(url).then(function(data){
         return div
     };
 
-    legend.addTo(map);
+    legend.addTo(myMap);
+  
+
 
     L.geoJson(data, {        
         onEachFeature: function(feature, layer){
             // Add a popup to each feature
             let color = colorString(feature.geometry.coordinates[2])
 
-            layer.bindPopup("<dl><dt>Magnitude:</dt><dd>" + feature.properties.mag + "</dd><dt>Location:</dt><dd>" + feature.properties.place + "</dd><dt>Depth:</dt><dd>" + feature.geometry.coordinates[2] + " km</dd><dt>Color:</dt><dd>" + color + "</dl>")
+            layer.bindPopup("<dl><dt>Magnitude:</dt><dd>" + feature.properties.mag + "</dd><dt>Location:</dt><dd>" + feature.properties.place + "</dd><dt>Depth:</dt><dd>" + feature.geometry.coordinates[2] + " km</dd><dt>Color:</dt><dd>" + color + "</dd><dt>Time:</dt><dd>" + new Date(feature.properties.time) + "</dd><dt>Type:</dt><dd>" + feature.properties.type+ "</dd></dl>")
         },
         pointToLayer: function(feature, latlng){
             // Create circles at the lat/long coordinates of each earthquake
